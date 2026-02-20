@@ -1,0 +1,236 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  // extensions = [vector(map: "vector")]
+}
+
+// Modelo base para um "Conteúdo" ou "Fonte" de um autor
+model Author {
+  id          String   @id @default(cuid())
+  name        String   @unique // Ex: "Mario Persona", "William Kelly"
+  slug        String   @unique
+  description String? // Biografia ou descrição do autor
+  bioUrl      String? // Link para saber mais sobre ele
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  questions        QuestionAnswer[]
+  doctrines        Doctrine[]
+  dailyVerses      DailyVerse[]
+  embeddedContents ContentEmbedding[]
+}
+
+// 1. Área de Perguntas e Respostas (Q&A)
+model QuestionAnswer {
+  id        String             @id @default(cuid())
+  question  String             @db.Text // A pergunta em si
+  answer    String             @db.Text // A resposta
+  context   String?            @db.Text // Contexto adicional (livro, data, etc)
+  authorId  String
+  author    Author             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags      String[] // Array de strings para tags simples (ex: ["salvação", "igreja"])
+  favorites QuestionFavorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([tags])
+}
+
+// 2. Área de Ensino de Doutrina (Lições/Escritos)
+model Doctrine {
+  id        String             @id @default(cuid())
+  title     String // Título do ensino (ex: "A Expiação")
+  slug      String             @unique // URL amigável baseada no título
+  content   String             @db.Text // O ensino em si (pode usar Markdown)
+  summary   String?            @db.Text // Um resumo curto para cards de preview
+  authorId  String
+  author    Author             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags      String[]
+  favorites DoctrineFavorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([tags])
+}
+
+// 3. Área de Frases Diárias (Versículos com Comentário)
+model DailyVerse {
+  id           String    @id @default(cuid())
+  verse        String // Referência do versículo (ex: "João 3:16")
+  text         String    @db.Text // Texto do versículo
+  explanation  String    @db.Text // Pequena explicação ou contextualização prática
+  authorId     String
+  author       Author    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags         String[]
+  scheduledFor DateTime? // Para agendar qual versículo aparece em qual dia
+
+  favorites VerseFavorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([scheduledFor])
+}
+
+// Modelo para armazenar embeddings dos conteúdos
+model ContentEmbedding {
+  id          String                       @id @default(cuid())
+  contentId   String // ID do conteúdo original (pode ser de qualquer tabela)
+  contentType String // "question", "doctrine", "verse"
+  title       String? // Título ou pergunta para contexto
+  content     String                       @db.Text // Texto completo para embedding
+  // embedding   Unsupported("vector(1536)")? // Embedding da OpenAI (1536 dimensões)
+  authorId    String?
+  author      Author?                      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt   DateTime                     @default(now())
+  updatedAt   DateTime                     @updatedAt
+
+  @@index([contentType])
+  @@index([contentId])
+  @@index([authorId])
+  // @@index([embedding]) // Índice para busca vetorial
+}
+
+// Modelo para histórico de conversas do chat
+model ChatConversation {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String // Título gerado automaticamente baseado na primeira pergunta
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+// Modelo para mensagens do chat
+model ChatMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String // "user" ou "assistant"
+  content        String           @db.Text
+  sources        Json? // Referências aos conteúdos usados (array de {id, type, title, author})
+  createdAt      DateTime         @default(now())
+  chatFeedbacks  ChatFeedback[]
+
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
+// Modelo para feedback do usuário nas respostas da IA
+model ChatFeedback {
+  id        String      @id @default(cuid())
+  messageId String
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int // 1-5
+  comment   String?     @db.Text
+  createdAt DateTime    @default(now())
+
+  @@unique([messageId, userId])
+  @@index([userId])
+}
+
+// Modelo de Usuário (para controle de acesso e interações futuras)
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // Se usar credenciais, hash da senha
+  role          String    @default("user") // "admin" ou "user"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+
+  // Relacionamentos de favoritos
+  favoriteQuestions QuestionFavorite[]
+  favoriteDoctrines DoctrineFavorite[]
+  favoriteVerses    VerseFavorite[]
+
+  // Relacionamentos para IA
+
+  chatConversations ChatConversation[]
+  chatFeedbacks     ChatFeedback[]
+}
+
+model QuestionFavorite {
+  id         String         @id @default(cuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String
+  question   QuestionAnswer @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime       @default(now())
+
+  @@unique([userId, questionId])
+  @@index([userId])
+  @@index([questionId])
+}
+
+model DoctrineFavorite {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  doctrineId String
+  doctrine   Doctrine @relation(fields: [doctrineId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, doctrineId])
+  @@index([userId])
+  @@index([doctrineId])
+}
+
+model VerseFavorite {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verseId   String
+  verse     DailyVerse @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+
+  @@unique([userId, verseId])
+  @@index([userId])
+  @@index([verseId])
+}
+
+// Modelos auxiliares para NextAuth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
