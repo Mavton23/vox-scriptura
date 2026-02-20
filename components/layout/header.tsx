@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { UserMenu } from '../common/user-menu'
+import { ThemeToggle } from '../ui/theme-toggle'
 import { 
   Menu, 
   Home, 
@@ -92,6 +93,10 @@ export default function Header() {
               <Bot className="h-5 w-5" />
             </Link>
           </Button>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           <Button
             variant="ghost"
             size="icon"
@@ -135,6 +140,13 @@ export default function Header() {
                   Buscar
                 </Button>
               </nav>
+
+              <div className="mt-4 pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Tema</span>
+                  <ThemeToggle />
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
 
