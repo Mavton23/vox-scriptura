@@ -83,7 +83,7 @@ export default function DoutrinasPage() {
 
       const authorsResponse = await fetch('/api/authors')
       const authorsData = await authorsResponse.json()
-      setAvailableAuthors(authorsData)
+      setAvailableAuthors(authorsData.authors)
     } catch (error) {
       console.error('Erro ao buscar filtros:', error)
     }
@@ -171,7 +171,7 @@ export default function DoutrinasPage() {
             <Card key={d.id} className="transition-all hover:shadow-lg flex flex-col">
               <CardHeader>
                 <CardTitle className="text-xl line-clamp-2">
-                  <Link href={`/doutrinas/${d.id}`} className="hover:text-primary transition-colors">
+                  <Link href={`/doutrinas/${d.slug}`} className="hover:text-primary transition-colors">
                     {d.title}
                   </Link>
                 </CardTitle>

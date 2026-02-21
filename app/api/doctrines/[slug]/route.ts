@@ -4,25 +4,22 @@ import { requireAdmin } from '@/lib/auth/permissions'
 
 // Buscar doutrina por ID ou slug (público)
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { id } = await params;
+    const { slug } = await params;
 
-    // Tenta buscar por ID primeiro
-    let doctrine = await prisma.doctrine.findUnique({
-      where: { id },
+    // Usa OR para buscar em ambos os campos de uma vez
+    const doctrine = await prisma.doctrine.findFirst({
+      where: {
+        OR: [
+          { id: slug },
+          { slug: slug }
+        ]
+      },
       include: { author: true }
-    })
-
-    // Se não encontrar por ID, tenta por slug
-    if (!doctrine) {
-      doctrine = await prisma.doctrine.findUnique({
-        where: { slug: id },
-        include: { author: true }
-      })
-    }
+    });
 
     if (!doctrine) {
       return NextResponse.json(

@@ -6,30 +6,18 @@ import { ArrowLeft, Share2, Bookmark } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 
+const API_URL = process.env.NEXT_PUBLIC_APP_URL || ''
+
 async function getQuestion(id: string) {
   try {
-    // Em produção, use URL relativa ou variável de ambiente
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-      ? `${process.env.NEXT_PUBLIC_APP_URL}` 
-      : process.env.VERCEL_URL 
-        ? `https://${process.env.VERCEL_URL}`
-        : ''
-
-    // Para APIs internas do Next.js, use URL relativa
-    const res = await fetch(`${baseUrl}/api/questions/${id}`, {
-      cache: 'no-store',
-      // Importante para server components
-      next: { revalidate: 0 }
+    const res = await fetch(`${API_URL}/api/questions/${id}`, {
+      cache: 'no-store'
     })
-    
-    if (!res.ok) {
-      if (res.status === 404) return null
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-    
-    return res.json()
+
+    if (!res.ok) return null
+      return res.json()
   } catch (error) {
-    console.error('Error fetching question:', error)
+    console.error('Error fetching:', error)
     return null
   }
 }

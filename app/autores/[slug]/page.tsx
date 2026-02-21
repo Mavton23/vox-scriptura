@@ -8,30 +8,17 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
+const API_URL = process.env.NEXT_PUBLIC_APP_URL || ''
+
 async function getAuthor(slug: string) {
   try {
-    // Em produção, use URL relativa ou variável de ambiente
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-      ? `${process.env.NEXT_PUBLIC_APP_URL}` 
-      : process.env.VERCEL_URL 
-        ? `https://${process.env.VERCEL_URL}`
-        : ''
-
-    // Para APIs internas do Next.js, use URL relativa
-    const res = await fetch(`${baseUrl}/api/authors/${slug}`, {
-      cache: 'no-store',
-      // Importante para server components
-      next: { revalidate: 0 }
+    const res = await fetch(`${API_URL}/api/authors/${slug}`, {
+      cache: 'no-store'
     })
-    
-    if (!res.ok) {
-      if (res.status === 404) return null
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-    
+    if (!res.ok) return null
     return res.json()
   } catch (error) {
-    console.error('Error fetching author:', error)
+    console.error('Error fetching:', error)
     return null
   }
 }

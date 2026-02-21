@@ -101,7 +101,7 @@ export default function FrasesDiariasPage() {
 
       const authorsResponse = await fetch('/api/authors')
       const authorsData = await authorsResponse.json()
-      setAvailableAuthors(authorsData.data)
+      setAvailableAuthors(authorsData.authors)
     } catch (error) {
       console.error('Erro ao buscar filtros:', error)
     }

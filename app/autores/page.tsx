@@ -39,7 +39,7 @@ export default function AutoresPage() {
     try {
       const response = await fetch('/api/authors')
       const data = await response.json()
-      setAuthors(data)
+      setAuthors(data.authors)
     } catch (error) {
       console.error('Erro ao buscar autores:', error)
     } finally {
