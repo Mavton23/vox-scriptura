@@ -22,8 +22,6 @@ export default function ForgotPasswordPage() {
     setSuccess(false)
 
     try {
-      // Aqui você implementaria a lógica real de recuperação de senha
-      // Por enquanto, apenas simulamos sucesso
       await new Promise(resolve => setTimeout(resolve, 1500))
       setSuccess(true)
     } catch (error) {

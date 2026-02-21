@@ -33,7 +33,7 @@ export default function RegisterPage() {
     return null
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
     
     const passwordError = validatePassword()
@@ -67,7 +67,7 @@ export default function RegisterPage() {
           email,
           password,
           redirect: false,
-          callbackUrl: '/chat'
+          callbackUrl: '/'
         })
 
         if (result?.error) {
