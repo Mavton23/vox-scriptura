@@ -1,20 +1,24 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { NextResponse, NextRequest } from 'next/server'
 import prisma from '@/lib/prisma'
+import { requireAdmin } from '@/lib/auth/permissions'
 
 export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession()
-
-    if (!session?.user) {
+    // Verificar permissões de admin
+    const authResult = await requireAdmin()
+    
+    if (authResult.error) {
       return NextResponse.json(
-        { error: 'Não autenticado' },
-        { status: 401 }
+        { error: authResult.error },
+        { status: authResult.status }
       )
     }
+
+    // Aguardar os params (Next.js 15+)
+    const { id } = await params
 
     const { role } = await request.json()
 
@@ -25,12 +29,20 @@ export async function PATCH(
       )
     }
 
-    // Impedir que o admin remova o próprio papel de admin
-    const user = await prisma.user.findUnique({
-      where: { id: params.id }
+    // Buscar o usuário a ser atualizado
+    const userToUpdate = await prisma.user.findUnique({
+      where: { id }
     })
 
-    if (user?.email === session.user.email && role !== 'admin') {
+    if (!userToUpdate) {
+      return NextResponse.json(
+        { error: 'Usuário não encontrado' },
+        { status: 404 }
+      )
+    }
+
+    // Impedir que o admin remova o próprio papel de admin
+    if (userToUpdate.email === authResult.user?.email && role !== 'admin') {
       return NextResponse.json(
         { error: 'Você não pode remover seu próprio papel de admin' },
         { status: 400 }
@@ -38,7 +50,7 @@ export async function PATCH(
     }
 
     const updated = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: { role },
       select: {
         id: true,
@@ -59,25 +71,37 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession()
-
-    if (!session?.user) {
+    // Verificar permissões de admin
+    const authResult = await requireAdmin()
+    
+    if (authResult.error) {
       return NextResponse.json(
-        { error: 'Não autenticado' },
-        { status: 401 }
+        { error: authResult.error },
+        { status: authResult.status }
+      )
+    }
+
+    // Aguardar os params (Next.js 15+)
+    const { id } = await params
+
+    // Buscar o usuário a ser excluído
+    const userToDelete = await prisma.user.findUnique({
+      where: { id }
+    })
+
+    if (!userToDelete) {
+      return NextResponse.json(
+        { error: 'Usuário não encontrado' },
+        { status: 404 }
       )
     }
 
     // Impedir que o admin se exclua
-    const user = await prisma.user.findUnique({
-      where: { id: params.id }
-    })
-
-    if (user?.email === session.user.email) {
+    if (userToDelete.email === authResult.user?.email) {
       return NextResponse.json(
         { error: 'Você não pode excluir sua própria conta' },
         { status: 400 }
@@ -85,7 +109,7 @@ export async function DELETE(
     }
 
     await prisma.user.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return new NextResponse(null, { status: 204 })
