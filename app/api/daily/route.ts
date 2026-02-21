@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import prisma from '@/lib/prisma'
-import { withAuth } from '@/lib/auth/permissions'
+import { requireAdmin } from '@/lib/auth/permissions'
 
 // Buscar versículos (público)
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type') // 'today' ou 'list'
@@ -101,68 +101,75 @@ export async function GET(request: Request) {
 }
 
 // Criar versículo (admin apenas)
-export const POST = withAuth(
-  async (req: Request) => {
-    try {
-      const body = await req.json()
-      const { verse, text, explanation, authorId, tags, scheduledFor } = body
-
-      if (!verse || !text || !explanation || !authorId) {
-        return NextResponse.json(
-          { error: 'Versículo, texto, explicação e autor são obrigatórios' },
-          { status: 400 }
-        )
-      }
-
-      // Verificar se autor existe
-      const author = await prisma.author.findUnique({
-        where: { id: authorId }
-      })
-
-      if (!author) {
-        return NextResponse.json(
-          { error: 'Autor não encontrado' },
-          { status: 400 }
-        )
-      }
-
-      // Se tiver data agendada, verificar se já existe para esta data
-      if (scheduledFor) {
-        const date = new Date(scheduledFor)
-        date.setHours(0, 0, 0, 0)
-
-        const existing = await prisma.dailyVerse.findFirst({
-          where: { scheduledFor: date }
-        })
-
-        if (existing) {
-          return NextResponse.json(
-            { error: 'Já existe um versículo agendado para esta data' },
-            { status: 400 }
-          )
-        }
-      }
-
-      const dailyVerse = await prisma.dailyVerse.create({
-        data: {
-          verse,
-          text,
-          explanation,
-          authorId,
-          tags: tags || [],
-          scheduledFor: scheduledFor ? new Date(scheduledFor) : null
-        },
-        include: { author: true }
-      })
-
-      return NextResponse.json(dailyVerse, { status: 201 })
-    } catch (error) {
-      console.error('Erro ao criar versículo:', error)
+export async function POST(request: NextRequest) {
+  try {
+    // Verificar permissões de admin
+    const authResult = await requireAdmin()
+    
+    if (authResult.error) {
       return NextResponse.json(
-        { error: 'Erro ao criar versículo' },
-        { status: 500 }
+        { error: authResult.error },
+        { status: authResult.status }
       )
     }
-  },
-  { requireAdmin: true }
-)
+
+    const body = await request.json()
+    const { verse, text, explanation, authorId, tags, scheduledFor } = body
+
+    if (!verse || !text || !explanation || !authorId) {
+      return NextResponse.json(
+        { error: 'Versículo, texto, explicação e autor são obrigatórios' },
+        { status: 400 }
+      )
+    }
+
+    // Verificar se autor existe
+    const author = await prisma.author.findUnique({
+      where: { id: authorId }
+    })
+
+    if (!author) {
+      return NextResponse.json(
+        { error: 'Autor não encontrado' },
+        { status: 400 }
+      )
+    }
+
+    // Se tiver data agendada, verificar se já existe para esta data
+    if (scheduledFor) {
+      const date = new Date(scheduledFor)
+      date.setHours(0, 0, 0, 0)
+
+      const existing = await prisma.dailyVerse.findFirst({
+        where: { scheduledFor: date }
+      })
+
+      if (existing) {
+        return NextResponse.json(
+          { error: 'Já existe um versículo agendado para esta data' },
+          { status: 400 }
+        )
+      }
+    }
+
+    const dailyVerse = await prisma.dailyVerse.create({
+      data: {
+        verse,
+        text,
+        explanation,
+        authorId,
+        tags: tags || [],
+        scheduledFor: scheduledFor ? new Date(scheduledFor) : null
+      },
+      include: { author: true }
+    })
+
+    return NextResponse.json(dailyVerse, { status: 201 })
+  } catch (error) {
+    console.error('Erro ao criar versículo:', error)
+    return NextResponse.json(
+      { error: 'Erro ao criar versículo' },
+      { status: 500 }
+    )
+  }
+}

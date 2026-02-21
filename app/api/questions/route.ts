@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import prisma from '@/lib/prisma'
-import { withAuth } from '@/lib/auth/permissions'
+import { requireAdmin } from '@/lib/auth/permissions'
 
 // GET /api/questions - Público, não requer autenticação
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const authorId = searchParams.get('authorId')
@@ -42,32 +42,57 @@ export async function GET(request: Request) {
 }
 
 // Apenas admin pode criar
-export const POST = withAuth(
-  async (req: Request, user) => {
-    try {
-      const body = await req.json()
-      const { question, answer, context, authorId, tags } = body
-
-      if (!question || !answer || !authorId) {
-        return NextResponse.json(
-          { error: 'Pergunta, resposta e autor são obrigatórios' },
-          { status: 400 }
-        )
-      }
-
-      const qa = await prisma.questionAnswer.create({
-        data: { question, answer, context, authorId, tags: tags || [] },
-        include: { author: true }
-      })
-
-      return NextResponse.json(qa, { status: 201 })
-    } catch (error) {
-      console.error('Erro ao criar pergunta:', error)
+export async function POST(request: NextRequest) {
+  try {
+    // Verificar permissões de admin
+    const authResult = await requireAdmin()
+    
+    if (authResult.error) {
       return NextResponse.json(
-        { error: 'Erro ao criar pergunta' },
-        { status: 500 }
+        { error: authResult.error },
+        { status: authResult.status }
       )
     }
-  },
-  { requireAdmin: true } // Apenas admin pode criar
-)
+
+    const body = await request.json()
+    const { question, answer, context, authorId, tags } = body
+
+    if (!question || !answer || !authorId) {
+      return NextResponse.json(
+        { error: 'Pergunta, resposta e autor são obrigatórios' },
+        { status: 400 }
+      )
+    }
+
+    // Verificar se o autor existe
+    const author = await prisma.author.findUnique({
+      where: { id: authorId }
+    })
+
+    if (!author) {
+      return NextResponse.json(
+        { error: 'Autor não encontrado' },
+        { status: 400 }
+      )
+    }
+
+    const qa = await prisma.questionAnswer.create({
+      data: { 
+        question, 
+        answer, 
+        context, 
+        authorId, 
+        tags: tags || [] 
+      },
+      include: { author: true }
+    })
+
+    return NextResponse.json(qa, { status: 201 })
+  } catch (error) {
+    console.error('Erro ao criar pergunta:', error)
+    return NextResponse.json(
+      { error: 'Erro ao criar pergunta' },
+      { status: 500 }
+    )
+  }
+}

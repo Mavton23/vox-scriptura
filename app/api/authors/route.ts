@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
-import { withAuth } from '@/lib/auth/permissions'
+import { requireAdmin } from '@/lib/auth/permissions'
 
 // Listar autores (público)
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
@@ -57,43 +57,50 @@ export async function GET(request: Request) {
 }
 
 // Criar autor (admin apenas)
-export const POST = withAuth(
-  async (req: Request) => {
-    try {
-      const body = await req.json()
-      const { name, slug, description, bioUrl } = body
-
-      if (!name || !slug) {
-        return NextResponse.json(
-          { error: 'Nome e slug são obrigatórios' },
-          { status: 400 }
-        )
-      }
-
-      // Verificar se slug já existe
-      const existing = await prisma.author.findUnique({
-        where: { slug }
-      })
-
-      if (existing) {
-        return NextResponse.json(
-          { error: 'Este slug já está em uso' },
-          { status: 400 }
-        )
-      }
-
-      const author = await prisma.author.create({
-        data: { name, slug, description, bioUrl }
-      })
-
-      return NextResponse.json(author, { status: 201 })
-    } catch (error) {
-      console.error('Erro ao criar autor:', error)
+export async function POST(request: NextRequest) {
+  try {
+    // Verificar permissões de admin
+    const authResult = await requireAdmin()
+    
+    if (authResult.error) {
       return NextResponse.json(
-        { error: 'Erro ao criar autor' },
-        { status: 500 }
+        { error: authResult.error },
+        { status: authResult.status }
       )
     }
-  },
-  { requireAdmin: true }
-)
+
+    const body = await request.json()
+    const { name, slug, description, bioUrl } = body
+
+    if (!name || !slug) {
+      return NextResponse.json(
+        { error: 'Nome e slug são obrigatórios' },
+        { status: 400 }
+      )
+    }
+
+    // Verificar se slug já existe
+    const existing = await prisma.author.findUnique({
+      where: { slug }
+    })
+
+    if (existing) {
+      return NextResponse.json(
+        { error: 'Este slug já está em uso' },
+        { status: 400 }
+      )
+    }
+
+    const author = await prisma.author.create({
+      data: { name, slug, description, bioUrl }
+    })
+
+    return NextResponse.json(author, { status: 201 })
+  } catch (error) {
+    console.error('Erro ao criar autor:', error)
+    return NextResponse.json(
+      { error: 'Erro ao criar autor' },
+      { status: 500 }
+    )
+  }
+}

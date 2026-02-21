@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth'
 import prisma from '@/lib/prisma'
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 
 export type UserRole = 'user' | 'admin' | 'superadmin'
 
@@ -109,18 +109,18 @@ export async function requireResourceOwner(resourceUserId: string) {
 }
 
 // Função de middleware para uso em APIs
-export async function withAuth(
-  handler: (req: Request, user: SessionUser) => Promise<NextResponse>,
+export function withAuth(
+  handler: (req: NextRequest, user: SessionUser) => Promise<Response>,
   options: {
     requireAdmin?: boolean
     requireSuperAdmin?: boolean
-    checkOwnership?: (user: SessionUser, req: Request) => boolean | Promise<boolean>
+    checkOwnership?: (user: SessionUser, req: NextRequest) => boolean | Promise<boolean>
   } = {}
 ) {
-  return async (req: Request) => {
+  return async (req: NextRequest): Promise<Response> => {
     try {
-      // Verificar autenticação
       const authResult = await requireAuth()
+
       if (authResult.error) {
         return NextResponse.json(
           { error: authResult.error },
@@ -130,23 +130,27 @@ export async function withAuth(
 
       const user = authResult.user!
 
-      // Verificar permissões de admin
-      if (options.requireAdmin && user.role !== 'admin' && user.role !== 'superadmin') {
+      if (
+        options.requireAdmin &&
+        user.role !== 'admin' &&
+        user.role !== 'superadmin'
+      ) {
         return NextResponse.json(
           { error: 'Acesso negado. Permissões de administrador necessárias.' },
           { status: 403 }
         )
       }
 
-      // Verificar permissões de super admin
-      if (options.requireSuperAdmin && user.role !== 'superadmin') {
+      if (
+        options.requireSuperAdmin &&
+        user.role !== 'superadmin'
+      ) {
         return NextResponse.json(
           { error: 'Acesso negado. Permissões de super administrador necessárias.' },
           { status: 403 }
         )
       }
 
-      // Verificar ownership se necessário
       if (options.checkOwnership) {
         const hasOwnership = await options.checkOwnership(user, req)
         if (!hasOwnership && user.role !== 'admin') {
@@ -157,8 +161,7 @@ export async function withAuth(
         }
       }
 
-      // Executar o handler com o usuário autenticado
-      return await handler(req, user)
+      return handler(req, user)
     } catch (error) {
       console.error('Erro no middleware de autenticação:', error)
       return NextResponse.json(

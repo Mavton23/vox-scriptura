@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { generateChatResponse } from '@/lib/ai-chat'
 import prisma from '@/lib/prisma'
-import { withAuth } from '@/lib/auth/permissions'
+import { requireAuth, requireResourceOwner } from '@/lib/auth/permissions'
 
-// Enviar mensagem para a IA
-export async function POST(request: Request) {
+// Enviar mensagem para a IA (pode ser anônimo ou autenticado)
+export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession()
     const { question, conversationId } = await request.json()
@@ -17,11 +17,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // Verificar rate limiting (opcional - implementar com Redis em produção)
-    // ...
-
-    // Buscar usuário se estiver logado
-    let userId = null
+    // Buscar usuário se estiver autenticado
+    let userId: any
     if (session?.user?.email) {
       const user = await prisma.user.findUnique({
         where: { email: session.user.email }
@@ -33,7 +30,7 @@ export async function POST(request: Request) {
     const response = await generateChatResponse(
       question,
       conversationId,
-      userId as any
+      userId
     )
 
     return NextResponse.json(response)
@@ -46,72 +43,88 @@ export async function POST(request: Request) {
   }
 }
 
-// Listar conversas do usuário
-export const GET = withAuth(
-  async (req: Request, user) => {
-    try {
-      const conversations = await prisma.chatConversation.findMany({
-        where: { userId: user.id },
-        include: {
-          messages: {
-            orderBy: { createdAt: 'desc' },
-            take: 1
-          }
-        },
-        orderBy: { updatedAt: 'desc' }
-      })
-
-      return NextResponse.json(conversations)
-    } catch (error) {
-      console.error('Erro ao buscar conversas:', error)
+// Listar conversas do usuário (requer autenticação)
+export async function GET(request: NextRequest) {
+  try {
+    // Verificar autenticação
+    const authResult = await requireAuth()
+    
+    if (authResult.error) {
       return NextResponse.json(
-        { error: 'Erro ao buscar conversas' },
-        { status: 500 }
+        { error: authResult.error },
+        { status: authResult.status }
       )
     }
-  }
-)
 
-// Deletar conversa
-export const DELETE = withAuth(
-  async (req: Request, user) => {
-    try {
-      const { searchParams } = new URL(req.url)
-      const conversationId = searchParams.get('id')
+    const user = authResult.user
 
-      if (!conversationId) {
-        return NextResponse.json(
-          { error: 'ID da conversa é obrigatório' },
-          { status: 400 }
-        )
-      }
-
-      // Verificar se a conversa pertence ao usuário
-      const conversation = await prisma.chatConversation.findFirst({
-        where: {
-          id: conversationId,
-          userId: user.id
+    const conversations = await prisma.chatConversation.findMany({
+      where: { userId: user?.id },
+      include: {
+        messages: {
+          orderBy: { createdAt: 'desc' },
+          take: 1
         }
-      })
+      },
+      orderBy: { updatedAt: 'desc' }
+    })
 
-      if (!conversation) {
-        return NextResponse.json(
-          { error: 'Conversa não encontrada' },
-          { status: 404 }
-        )
-      }
+    return NextResponse.json(conversations)
+  } catch (error) {
+    console.error('Erro ao buscar conversas:', error)
+    return NextResponse.json(
+      { error: 'Erro ao buscar conversas' },
+      { status: 500 }
+    )
+  }
+}
 
-      await prisma.chatConversation.delete({
-        where: { id: conversationId }
-      })
+// Deletar conversa (requer ser dono do recurso)
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const conversationId = searchParams.get('id')
 
-      return new NextResponse(null, { status: 204 })
-    } catch (error) {
-      console.error('Erro ao deletar conversa:', error)
+    if (!conversationId) {
       return NextResponse.json(
-        { error: 'Erro ao deletar conversa' },
-        { status: 500 }
+        { error: 'ID da conversa é obrigatório' },
+        { status: 400 }
       )
     }
+
+    // Buscar a conversa para verificar o dono
+    const conversation = await prisma.chatConversation.findUnique({
+      where: { id: conversationId },
+      select: { userId: true }
+    })
+
+    if (!conversation) {
+      return NextResponse.json(
+        { error: 'Conversa não encontrada' },
+        { status: 404 }
+      )
+    }
+
+    // Verificar se o usuário é dono do recurso (ou admin)
+    const ownershipResult = await requireResourceOwner(conversation.userId)
+    
+    if (ownershipResult.error) {
+      return NextResponse.json(
+        { error: ownershipResult.error },
+        { status: ownershipResult.status }
+      )
+    }
+
+    await prisma.chatConversation.delete({
+      where: { id: conversationId }
+    })
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error('Erro ao deletar conversa:', error)
+    return NextResponse.json(
+      { error: 'Erro ao deletar conversa' },
+      { status: 500 }
+    )
   }
-)
+}
