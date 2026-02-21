@@ -2,24 +2,26 @@ import { NextResponse, NextRequest } from 'next/server'
 import prisma from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth/permissions'
 
-// Buscar doutrina por ID ou slug (público)
+type RouteParams = {
+  params: Promise<{ slug: string }>
+}
+
+/**
+ * Buscar doutrina por ID ou slug (público)
+ */
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: RouteParams
 ) {
   try {
-    const { slug } = await params;
+    const { slug } = await params
 
-    // Usa OR para buscar em ambos os campos de uma vez
     const doctrine = await prisma.doctrine.findFirst({
       where: {
-        OR: [
-          { id: slug },
-          { slug: slug }
-        ]
+        OR: [{ id: slug }, { slug }]
       },
       include: { author: true }
-    });
+    })
 
     if (!doctrine) {
       return NextResponse.json(
@@ -38,15 +40,17 @@ export async function GET(
   }
 }
 
-// Atualizar doutrina (admin apenas)
+/**
+ * Atualizar doutrina (admin)
+ */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: RouteParams
 ) {
   try {
-    // Verificar permissões de admin
+    const { slug } = await params
+
     const authResult = await requireAdmin()
-    
     if (authResult.error) {
       return NextResponse.json(
         { error: authResult.error },
@@ -54,27 +58,17 @@ export async function PUT(
       )
     }
 
-    const { id } = await params;
-
-    if (!id) {
-      return NextResponse.json(
-        { error: 'ID não fornecido' },
-        { status: 400 }
-      )
-    }
-
     const body = await request.json()
-    const { title, slug, summary, content, authorId, tags } = body
+    const { title, slug: newSlug, summary, content, authorId, tags } = body
 
-    // Verificar se doutrina existe (tenta por ID ou slug)
+    // Buscar por ID ou slug
     let existing = await prisma.doctrine.findUnique({
-      where: { id }
+      where: { id: slug }
     })
 
-    // Se não encontrar por ID, tenta por slug
     if (!existing) {
       existing = await prisma.doctrine.findUnique({
-        where: { slug: id }
+        where: { slug }
       })
     }
 
@@ -85,10 +79,10 @@ export async function PUT(
       )
     }
 
-    // Se slug foi alterado, verificar se novo slug já existe
-    if (slug && slug !== existing.slug) {
+    // Validar novo slug
+    if (newSlug && newSlug !== existing.slug) {
       const slugExists = await prisma.doctrine.findUnique({
-        where: { slug }
+        where: { slug: newSlug }
       })
 
       if (slugExists) {
@@ -100,14 +94,14 @@ export async function PUT(
     }
 
     const doctrine = await prisma.doctrine.update({
-      where: { id: existing.id }, // Usa o ID real do registro
-      data: { 
-        title, 
-        slug, 
-        summary, 
-        content, 
-        authorId, 
-        tags: tags || [] 
+      where: { id: existing.id },
+      data: {
+        title,
+        slug: newSlug,
+        summary,
+        content,
+        authorId,
+        tags: tags ?? []
       },
       include: { author: true }
     })
@@ -122,15 +116,17 @@ export async function PUT(
   }
 }
 
-// Remover doutrina (admin apenas)
+/**
+ * Remover doutrina (admin)
+ */
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _request: NextRequest,
+  { params }: RouteParams
 ) {
   try {
-    // Verificar permissões de admin
+    const { slug } = await params
+
     const authResult = await requireAdmin()
-    
     if (authResult.error) {
       return NextResponse.json(
         { error: authResult.error },
@@ -138,23 +134,13 @@ export async function DELETE(
       )
     }
 
-    const { id } = await params;
-
-    if (!id) {
-      return NextResponse.json(
-        { error: 'ID não fornecido' },
-        { status: 400 }
-      )
-    }
-
-    // Verificar se doutrina existe (tenta por ID ou slug)
     let existing = await prisma.doctrine.findUnique({
-      where: { id }
+      where: { id: slug }
     })
 
     if (!existing) {
       existing = await prisma.doctrine.findUnique({
-        where: { slug: id }
+        where: { slug }
       })
     }
 
@@ -166,7 +152,7 @@ export async function DELETE(
     }
 
     await prisma.doctrine.delete({
-      where: { id: existing.id } // Usa o ID real do registro
+      where: { id: existing.id }
     })
 
     return new NextResponse(null, { status: 204 })
