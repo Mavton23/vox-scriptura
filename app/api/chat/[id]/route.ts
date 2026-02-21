@@ -3,12 +3,13 @@ import { getServerSession } from 'next-auth'
 import { getChatHistory } from '@/lib/ai-chat'
 import prisma from '@/lib/prisma'
 
-// GET /api/chat/[id] - Buscar histórico de uma conversa
+// Buscar histórico de uma conversa
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise <{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession()
     
     if (!session?.user?.email) {
@@ -25,7 +26,7 @@ export async function GET(
     // Verificar se a conversa pertence ao usuário
     const conversation = await prisma.chatConversation.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: user?.id
       }
     })
@@ -37,7 +38,7 @@ export async function GET(
       )
     }
 
-    const messages = await getChatHistory(user!.id, params.id)
+    const messages = await getChatHistory(user!.id, id)
 
     return NextResponse.json({
       id: conversation.id,
@@ -53,12 +54,13 @@ export async function GET(
   }
 }
 
-// PATCH /api/chat/[id] - Atualizar título da conversa
+// Atualizar título da conversa
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise <{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession()
     const { title } = await request.json()
 
@@ -83,7 +85,7 @@ export async function PATCH(
     // Verificar se a conversa pertence ao usuário
     const conversation = await prisma.chatConversation.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: user?.id
       }
     })
@@ -96,7 +98,7 @@ export async function PATCH(
     }
 
     const updated = await prisma.chatConversation.update({
-      where: { id: params.id },
+      where: { id },
       data: { title }
     })
 
