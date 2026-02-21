@@ -6,7 +6,7 @@ import { BookOpen, MessageCircle, Calendar, ArrowRight, Quote } from 'lucide-rea
 import Link from 'next/link'
 
 // URL base da API (em produção, isso viria de uma variável de ambiente)
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://vox-scriptura.vercel.app/'
 
 interface DailyVerse {
   id: string
