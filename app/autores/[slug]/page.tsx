@@ -9,11 +9,31 @@ import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 async function getAuthor(slug: string) {
-  const res = await fetch(`http://localhost:3000/api/authors/${slug}`, {
-    cache: 'no-store'
-  })
-  if (!res.ok) return null
-  return res.json()
+  try {
+    // Em produção, use URL relativa ou variável de ambiente
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
+      ? `${process.env.NEXT_PUBLIC_APP_URL}` 
+      : process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}`
+        : ''
+
+    // Para APIs internas do Next.js, use URL relativa
+    const res = await fetch(`${baseUrl}/api/authors/${slug}`, {
+      cache: 'no-store',
+      // Importante para server components
+      next: { revalidate: 0 }
+    })
+    
+    if (!res.ok) {
+      if (res.status === 404) return null
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+    
+    return res.json()
+  } catch (error) {
+    console.error('Error fetching author:', error)
+    return null
+  }
 }
 
 export default async function AutorDetalhePage({ params }: { params: Promise <{ slug: string }> }) {

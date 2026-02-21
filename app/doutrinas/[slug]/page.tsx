@@ -8,18 +8,38 @@ import { formatDate } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
 import { FavoriteButton } from '@/components/common/favorite-button'
 
-async function getDoctrine(slug: string) {
-  const res = await fetch(`http://localhost:3000/api/doctrines/${slug}`, {
-    cache: 'no-store'
-  })
-  if (!res.ok) return null
-  return res.json()
+async function getDoctrine(id: string) {
+  try {
+    // Em produção, use URL relativa ou variável de ambiente
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
+      ? `${process.env.NEXT_PUBLIC_APP_URL}` 
+      : process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}`
+        : ''
+
+    // Para APIs internas do Next.js, use URL relativa
+    const res = await fetch(`${baseUrl}/api/doutrine/${id}`, {
+      cache: 'no-store',
+      // Importante para server components
+      next: { revalidate: 0 }
+    })
+    
+    if (!res.ok) {
+      if (res.status === 404) return null
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+    
+    return res.json()
+  } catch (error) {
+    console.error('Error fetching doutrine:', error)
+    return null
+  }
 }
 
-export default async function DoctrineDetalhePage({ params }: { params: Promise <{ slug: string }> }) {
+export default async function DoctrineDetalhePage({ params }: { params: Promise <{ id: string }> }) {
   
-  const { slug } = await params;
-  const doctrine = await getDoctrine(slug)
+  const { id } = await params;
+  const doctrine = await getDoctrine(id)
 
   if (!doctrine) {
     return (
