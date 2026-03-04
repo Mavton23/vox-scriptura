@@ -138,7 +138,7 @@ export default async function AutorDetalhePage({ params }: { params: Promise <{ 
                   <p className="text-muted-foreground line-clamp-2">{q.answer}</p>
                 </CardContent>
                 <CardFooter>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {q.tags?.map((tag: string) => (
                       <Badge key={tag} variant="secondary">{tag}</Badge>
                     ))}
@@ -173,7 +173,7 @@ export default async function AutorDetalhePage({ params }: { params: Promise <{ 
                   <p className="text-muted-foreground line-clamp-2">{d.summary || d.content.substring(0, 150)}...</p>
                 </CardContent>
                 <CardFooter>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {d.tags?.map((tag: string) => (
                       <Badge key={tag} variant="secondary">{tag}</Badge>
                     ))}
@@ -205,7 +205,7 @@ export default async function AutorDetalhePage({ params }: { params: Promise <{ 
                   <p className="text-sm text-muted-foreground">{v.explanation}</p>
                 </CardContent>
                 <CardFooter>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {v.tags?.map((tag: string) => (
                       <Badge key={tag} variant="secondary">{tag}</Badge>
                     ))}

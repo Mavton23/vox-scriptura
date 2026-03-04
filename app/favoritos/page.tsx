@@ -262,7 +262,7 @@ export default function FavoritosPage() {
                       >
                         Por {item.author.name}
                       </Link>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         {item.tags?.slice(0, 3).map((tag) => (
                           <Badge key={tag} variant="secondary">
                             {tag}

@@ -250,7 +250,7 @@ export default async function HomePage() {
                     <CardContent>
                       <div className="flex items-center justify-between">
                         <p className="text-sm text-muted-foreground">Por {q.author.name}</p>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                           {q.tags?.slice(0, 2).map((tag) => (
                             <Badge key={tag} variant="secondary">{tag}</Badge>
                           ))}
@@ -298,7 +298,7 @@ export default async function HomePage() {
                     <CardContent>
                       <div className="flex items-center justify-between">
                         <p className="text-sm text-muted-foreground">Por {d.author.name}</p>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                           {d.tags?.slice(0, 2).map((tag) => (
                             <Badge key={tag} variant="secondary">{tag}</Badge>
                           ))}
