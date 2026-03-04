@@ -115,7 +115,7 @@ export default async function PerguntaDetalhePage({ params }: { params: Promise 
             <p className="text-muted-foreground mb-4">
               Este tema está relacionado com outras doutrinas importantes. Explore mais:
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button variant="outline" asChild>
                 <Link href={`/doutrinas?tag=${question.tags[0]}`}>
                   Ver doutrinas relacionadas
