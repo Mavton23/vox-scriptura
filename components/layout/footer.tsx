@@ -74,7 +74,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-primary">Redes Sociais</h3>
             <div className="flex space-x-4">
               <Link 
-                href="#" 
+                href="https://facebook.com/profile.php?id=61565792531619" 
                 className="text-muted-foreground hover:text-primary transition-colors bg-background rounded-full p-2 hover:bg-primary"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -82,7 +82,7 @@ export default function Footer() {
                 <FaFacebookF className="h-4 w-4" />
               </Link>
               <Link 
-                href="#" 
+                href="https://www.instagram.com/nordinomaviedev/" 
                 className="text-muted-foreground hover:text-primary transition-colors bg-background rounded-full p-2 hover:bg-primary"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -90,7 +90,7 @@ export default function Footer() {
                 <FaInstagram className="h-4 w-4" />
               </Link>
               <Link 
-                href="#" 
+                href="https://wa.me/258875694141" 
                 className="text-muted-foreground hover:text-primary transition-colors bg-background rounded-full p-2 hover:bg-primary"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -100,7 +100,7 @@ export default function Footer() {
             </div>
             
             {/* Newsletter ou contato direto */}
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <p className="text-sm text-muted-foreground mb-2">
                 Receba atualizações por email
               </p>
@@ -114,7 +114,7 @@ export default function Footer() {
                   Enviar
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
