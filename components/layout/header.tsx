@@ -82,7 +82,7 @@ export default function Header() {
                         href={item.href}
                         className={cn(
                           navigationMenuTriggerStyle(),
-                          pathname === item.href && "bg-accent/10 text-accent"
+                          pathname === item.href && "bg-accent text-muted-foreground"
                         )}
                       >
                         <Icon className="mr-2 h-4 w-4" />

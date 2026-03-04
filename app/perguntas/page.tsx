@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { 
   Select,
   SelectContent,
@@ -212,29 +211,31 @@ export default function PerguntasPage() {
               <CardContent>
                 <p className="text-muted-foreground line-clamp-3">{q.answer}</p>
               </CardContent>
-              <CardFooter className="flex justify-between border-t pt-4">
-                <div className="flex items-center gap-4">
+              <CardFooter className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-t pt-4 gap-4 m-2">
+                <div className="flex-1 min-w-0">
+                  {/* Autor */}
                   <Link 
                     href={`/autores/${q.author.slug}`}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-block mb-2 sm:mb-0 sm:mr-4"
                   >
                     Por {q.author.name}
                   </Link>
-                  <Separator orientation="vertical" className="h-4" />
-                  <div className="flex gap-2">
-                    {q.tags.map((tag) => (
-                      <Badge 
-                        key={tag} 
-                        variant="secondary"
-                        className="cursor-pointer hover:bg-secondary/80"
-                        onClick={() => setSelectedTag(tag)}
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
                 </div>
-                <Button variant="ghost" size="sm" asChild>
+                
+                <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  {q.tags.map((tag) => (
+                    <Badge 
+                      key={tag} 
+                      variant="secondary"
+                      className="cursor-pointer hover:bg-secondary/80"
+                      onClick={() => setSelectedTag(tag)}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+
+                <Button variant="ghost" size="sm" asChild className="self-start sm:self-center">
                   <Link href={`/perguntas/${q.id}`}>
                     Ler resposta
                   </Link>

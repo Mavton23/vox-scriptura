@@ -5,7 +5,6 @@ import { Separator } from '@/components/ui/separator'
 import { BookOpen, MessageCircle, Calendar, ArrowRight, Quote } from 'lucide-react'
 import Link from 'next/link'
 
-// URL base da API (em produção, isso viria de uma variável de ambiente)
 const API_URL = process.env.NEXT_PUBLIC_APP_URL || ''
 
 interface DailyVerse {
@@ -48,7 +47,7 @@ interface Doctrine {
 async function getDailyVerse(): Promise<DailyVerse | null> {
   try {
     const response = await fetch(`${API_URL}/api/daily?type=today`, {
-      next: { revalidate: 3600 } // Revalidar a cada hora
+      next: { revalidate: 3600 }
     })
     
     if (!response.ok) {
@@ -66,7 +65,7 @@ async function getDailyVerse(): Promise<DailyVerse | null> {
 async function getRecentQuestions(limit: number = 3): Promise<Question[]> {
   try {
     const response = await fetch(`${API_URL}/api/questions?page=1&limit=${limit}`, {
-      next: { revalidate: 300 } // Revalidar a cada 5 minutos
+      next: { revalidate: 300 }
     })
     
     if (!response.ok) {
@@ -85,7 +84,7 @@ async function getRecentQuestions(limit: number = 3): Promise<Question[]> {
 async function getRecentDoctrines(limit: number = 3): Promise<Doctrine[]> {
   try {
     const response = await fetch(`${API_URL}/api/doctrines?page=1&limit=${limit}`, {
-      next: { revalidate: 300 } // Revalidar a cada 5 minutos
+      next: { revalidate: 300 }
     })
     
     if (!response.ok) {
@@ -103,7 +102,6 @@ async function getRecentDoctrines(limit: number = 3): Promise<Doctrine[]> {
 
 export default async function HomePage() {
 
-  // Buscar dados em paralelo para melhor performance
   const [dailyVerse, recentQuestions, recentDoctrines] = await Promise.all([
     getDailyVerse(),
     getRecentQuestions(3),
@@ -120,8 +118,8 @@ export default async function HomePage() {
               Voz da Escritura
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-6xl">
-              Aprenda e Cresça na Sã Doutrina
-              {/* <span className="text-secondary block">Sã Doutrina</span> */}
+              Aprenda e Cresça na
+              <span className="text-foreground block">Sã Doutrina</span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
               Uma plataforma dedicada ao ensino bíblico baseado nos escritos de autores confiáveis,
