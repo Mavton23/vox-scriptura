@@ -8,19 +8,37 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const authorId = searchParams.get('authorId')
     const tag = searchParams.get('tag')
+    const search = searchParams.get('search') // Novo parâmetro de busca
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
     const skip = (page - 1) * limit
 
-    const where = {
+    // Construir o where dinamicamente
+    const where: any = {
       ...(authorId && { authorId }),
       ...(tag && { tags: { has: tag } })
+    }
+
+    // Adicionar busca textual se fornecida
+    if (search && search.trim()) {
+      where.OR = [
+        { question: { contains: search, mode: 'insensitive' } },
+        { answer: { contains: search, mode: 'insensitive' } },
+        { context: { contains: search, mode: 'insensitive' } }
+      ]
     }
 
     const [questions, total] = await Promise.all([
       prisma.questionAnswer.findMany({
         where,
-        include: { author: { select: { name: true, slug: true } } },
+        include: { 
+          author: { 
+            select: { 
+              name: true, 
+              slug: true 
+            } 
+          } 
+        },
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit
