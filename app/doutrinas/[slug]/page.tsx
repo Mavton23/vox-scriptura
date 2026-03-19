@@ -3,10 +3,10 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Share2, Bookmark } from 'lucide-react'
+import { FavoriteButton } from '@/components/common/favorite-button'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
-import { FavoriteButton } from '@/components/common/favorite-button'
 
 const API_URL = process.env.NEXT_PUBLIC_APP_URL || ''
 
@@ -59,16 +59,13 @@ export default async function DoctrineDetalhePage({ params }: { params: Promise 
                 <CardDescription className="text-base">{doctrine.summary}</CardDescription>
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 ml-4">
               <FavoriteButton 
                 type='doctrine'
                 id={doctrine.id}
                 variant='outline'
                 size='icon'
               />
-              <Button variant="outline" size="icon">
-                <Share2 className="h-4 w-4" />
-              </Button>
             </div>
           </div>
         </CardHeader>

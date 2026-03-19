@@ -2,7 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Share2, Bookmark } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
+import { FavoriteButton } from '@/components/common/favorite-button'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
 
@@ -58,13 +59,13 @@ export default async function PerguntaDetalhePage({ params }: { params: Promise 
                 <CardDescription className="text-base">{question.context}</CardDescription>
               )}
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="icon">
-                <Bookmark className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Share2 className="h-4 w-4" />
-              </Button>
+            <div className="flex gap-2 ml-4">
+              <FavoriteButton 
+                id={question.id}
+                type='question'
+                variant='outline'
+                size='icon'
+              />
             </div>
           </div>
         </CardHeader>

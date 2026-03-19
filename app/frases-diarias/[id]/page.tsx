@@ -2,11 +2,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Calendar, User, Tag, Heart, Share2 } from 'lucide-react'
+import { ArrowLeft, Calendar, User, Tag } from 'lucide-react'
+import { FavoriteButton } from '@/components/common/favorite-button'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { FavoriteButton } from '@/components/common/favorite-button'
 
 const API_URL = process.env.NEXT_PUBLIC_APP_URL || ''
 
@@ -65,16 +65,13 @@ export default async function FraseDetalhePage({ params }: { params: Promise <{ 
                 "{verse.text}"
               </CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 ml-4">
               <FavoriteButton 
                 type='verse'
                 id={verse.id}
                 variant="outline" 
                 size="icon"
               />
-              <Button variant="outline" size="icon">
-                <Share2 className="h-4 w-4" />
-              </Button>
             </div>
           </div>
         </CardHeader>

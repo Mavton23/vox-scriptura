@@ -60,30 +60,30 @@ export function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
+        {/* <DropdownMenuItem asChild>
           <Link href="/perfil" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             <span>Meu Perfil</span>
           </Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuItem asChild>
           <Link href="/favoritos" className="cursor-pointer">
             <Heart className="mr-2 h-4 w-4" />
             <span>Meus Favoritos</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        {/* <DropdownMenuItem asChild>
           <Link href="/chat" className="cursor-pointer">
             <MessageSquare className="mr-2 h-4 w-4" />
             <span>Histórico de Chat</span>
           </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        </DropdownMenuItem> */}
+        {/* <DropdownMenuItem asChild>
           <Link href="/configuracoes" className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
             <span>Configurações</span>
           </Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer text-red-500 focus:text-red-500"

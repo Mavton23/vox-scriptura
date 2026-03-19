@@ -42,7 +42,7 @@ export function FavoriteButton({
           isFavorite && "fill-current"
         )} 
       />
-      {showText && (isFavorite ? 'Salvo' : 'Favoritar')}
+      {showText && (isFavorite ? 'Guardado' : 'Guardar')}
     </Button>
   )
 }
