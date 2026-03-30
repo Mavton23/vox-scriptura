@@ -72,7 +72,7 @@ export default async function DoctrineDetalhePage({ params }: { params: Promise 
 
         <CardContent className="space-y-8">
           {/* Content */}
-          <div className="prose prose-lg max-w-none">
+          <div className="leading-7 text-base font-serif max-w-none">
             <ReactMarkdown>
               {doctrine.content}
             </ReactMarkdown>

@@ -74,7 +74,7 @@ export default async function PerguntaDetalhePage({ params }: { params: Promise 
           {/* Answer */}
           <div className="prose prose-lg max-w-none">
             <h2 className="text-xl font-semibold text-primary mb-4">Resposta</h2>
-            <div className="whitespace-pre-wrap text-muted-foreground">
+            <div className="leading-7 text-base font-serif">
               {question.answer}
             </div>
           </div>

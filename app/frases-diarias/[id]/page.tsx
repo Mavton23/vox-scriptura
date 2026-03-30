@@ -81,7 +81,7 @@ export default async function FraseDetalhePage({ params }: { params: Promise <{ 
           <div>
             <h2 className="text-xl font-semibold text-primary mb-4">Meditação</h2>
             <div className="prose prose-lg max-w-none">
-              <p className="text-muted-foreground leading-relaxed">{verse.explanation}</p>
+              <p className="leading-7 text-base font-serif">{verse.explanation}</p>
             </div>
           </div>
 
