@@ -324,7 +324,7 @@ export default async function HomePage() {
 
       {/* CTA Section */}
       <section className="container">
-        <div className="rounded-2xl bg-primary p-12 text-center text-primary-foreground">
+        <div className="rounded-2xl bg-accent p-12 text-center text-primary-foreground">
           <h2 className="text-3xl font-bold">Pronto para aprofundar seus estudos?</h2>
           <p className="mt-4 text-lg opacity-90">
             Explore nossa biblioteca de perguntas, doutrinas e versículos comentados

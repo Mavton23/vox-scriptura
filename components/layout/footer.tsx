@@ -75,7 +75,7 @@ export default function Footer() {
             <div className="flex space-x-4">
               <Link 
                 href="https://facebook.com/profile.php?id=61565792531619" 
-                className="text-muted-foreground hover:text-primary transition-colors bg-background rounded-full p-2 hover:bg-primary"
+                className="text-muted-foreground hover:text-accent transition-colors bg-background rounded-full p-2 hover:bg-primary"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -83,7 +83,7 @@ export default function Footer() {
               </Link>
               <Link 
                 href="https://www.instagram.com/nordinomaviedev/" 
-                className="text-muted-foreground hover:text-primary transition-colors bg-background rounded-full p-2 hover:bg-primary"
+                className="text-muted-foreground hover:text-accent transition-colors bg-background rounded-full p-2 hover:bg-primary"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -91,7 +91,7 @@ export default function Footer() {
               </Link>
               <Link 
                 href="https://wa.me/258875694141" 
-                className="text-muted-foreground hover:text-primary transition-colors bg-background rounded-full p-2 hover:bg-primary"
+                className="text-muted-foreground hover:text-accent transition-colors bg-background rounded-full p-2 hover:bg-primary"
                 target="_blank"
                 rel="noopener noreferrer"
               >
