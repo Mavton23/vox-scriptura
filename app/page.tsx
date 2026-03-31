@@ -119,7 +119,7 @@ export default async function HomePage() {
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-6xl">
               Aprenda e Cresça na
-              <span className="text-foreground block">Sã Doutrina</span>
+              <span className="text-hightlight block">Sã Doutrina</span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
               Uma plataforma dedicada ao ensino bíblico baseado nos escritos de autores confiáveis,
@@ -324,7 +324,7 @@ export default async function HomePage() {
 
       {/* CTA Section */}
       <section className="container">
-        <div className="rounded-2xl bg-accent p-12 text-center text-primary-foreground">
+        <div className="rounded-2xl bg-hightlight p-12 text-center text-primary-foreground">
           <h2 className="text-3xl font-bold">Pronto para aprofundar seus estudos?</h2>
           <p className="mt-4 text-lg opacity-90">
             Explore nossa biblioteca de perguntas, doutrinas e versículos comentados

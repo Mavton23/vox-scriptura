@@ -62,7 +62,7 @@ export default function Header() {
         <div className="container flex h-16 items-center justify-between px-3 sm:px-4">
           {/* Logo - Ajustada para mobile */}
           <Link href="/" className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-            <span className="text-lg sm:text-xl md:text-2xl font-bold text-primary truncate">
+            <span className="text-lg sm:text-xl md:text-2xl font-bold text-hightlight truncate">
               Vox Scriptura
             </span>
             <span className="hidden xs:inline-block text-[8px] sm:text-xs bg-secondary text-secondary-foreground px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap">
