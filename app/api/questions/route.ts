@@ -39,7 +39,10 @@ export async function GET(request: NextRequest) {
             } 
           } 
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: [
+          { favorites: { _count: 'desc' } },
+          { createdAt: 'asc' }
+        ],
         skip,
         take: limit
       }),
