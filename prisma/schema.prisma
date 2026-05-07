@@ -157,6 +157,7 @@ model User {
 
   sessions Session[]
   accounts Account[]
+  contactMessages ContactMessage[]
 
   // Relacionamentos de favoritos
   favoriteQuestions QuestionFavorite[]
@@ -233,4 +234,27 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String   // Nome do remetente
+  email     String   // Email do remetente
+  subject   String   // Assunto da mensagem
+  message   String   @db.Text // Conteúdo da mensagem
+  status    String   @default("pending") // pending, read, replied, archived
+  repliedAt DateTime? // Data da resposta
+  repliedBy String?  // ID do usuário que respondeu (admin)
+  reply     String?  @db.Text // Resposta enviada ao usuário
+  ipAddress String?  // IP do remetente (para segurança)
+  userAgent String?  // Navegador/dispositivo do usuário
+  userId    String?  // Se o usuário está logado, referência ao User
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId])
 }
