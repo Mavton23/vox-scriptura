@@ -9,7 +9,7 @@ export async function proxy(request: NextRequest) {
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
 
     if (!token) {
-      const url = new URL('/login', request.url)
+      const url = new URL('/auth/login', request.url)
       url.searchParams.set('callbackUrl', path)
       return NextResponse.redirect(url)
     }

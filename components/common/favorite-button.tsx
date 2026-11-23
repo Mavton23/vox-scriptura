@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Heart } from 'lucide-react'
+import { Bookmark } from 'lucide-react'
 import { useFavorites } from '@/hooks/useFavorites'
 import { cn } from '@/lib/utils'
 
@@ -30,15 +30,14 @@ export function FavoriteButton({
       size={size}
       onClick={toggleFavorite}
       disabled={loading}
-      className={cn(
-        isFavorite && 'text-red-500 hover:text-red-600',
-        className
-      )}
+      aria-pressed={isFavorite}
+      aria-label={isFavorite ? 'Remover dos favoritos' : 'Guardar nos favoritos'}
+      title={isFavorite ? 'Remover dos favoritos' : 'Guardar nos favoritos'}
+      className={cn(isFavorite && 'text-gold-ink hover:text-gold-ink', className)}
     >
-      <Heart 
+      <Bookmark 
         className={cn(
           "h-4 w-4",
-          showText && "mr-2",
           isFavorite && "fill-current"
         )} 
       />

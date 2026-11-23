@@ -90,10 +90,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="container max-w-md py-12">
+    <div className="w-full">
       <Card>
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-3xl font-bold text-primary">
+          <CardTitle className="text-3xl">
             Criar Conta
           </CardTitle>
           <CardDescription>

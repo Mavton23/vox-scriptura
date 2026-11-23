@@ -64,7 +64,7 @@ function HighlightText({ text, highlight }: { text: string; highlight: string })
     <span>
       {parts.map((part, i) => 
         regex.test(part) ? (
-          <mark key={i} className="bg-yellow-200 dark:bg-yellow-800/50 px-0.5 rounded">
+          <mark key={i} className="bg-gold/25 text-foreground px-0.5 rounded">
             {part}
           </mark>
         ) : (
@@ -220,8 +220,7 @@ export default function DoutrinasPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <BookOpen className="h-8 w-8 text-secondary" />
-          <h1 className="text-4xl font-bold text-primary">Ensino de Doutrina</h1>
+          <h1 className="text-[2.6rem] leading-tight">Ensino de Doutrina</h1>
         </div>
         <p className="text-lg text-muted-foreground">
           Estudos profundos sobre as principais doutrinas da fé cristã, baseados em autores confiáveis

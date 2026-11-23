@@ -125,7 +125,7 @@ export default function SobrePage() {
     <main className="min-h-screen bg-background">
       <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-10 md:px-8 lg:px-12">
         {/* HERO */}
-        <section className="relative overflow-hidden rounded-3xl border bg-linear-to-br from-primary/10 via-background to-secondary/10 px-6 py-20 md:px-12">
+        <section className="relative overflow-hidden rounded-xl bg-secondary px-6 py-20 md:px-12">
           <div className="absolute inset-0 bg-grid-white/[0.02]" />
 
           <div className="relative mx-auto max-w-4xl text-center">
@@ -135,7 +135,7 @@ export default function SobrePage() {
               </span>
             </div>
 
-            <h1 className="mb-6 text-5xl font-bold tracking-tight text-primary md:text-7xl">
+            <h1 className="mb-6 text-5xl tracking-tight md:text-7xl">
               Voz da Escritura
             </h1>
 
@@ -320,7 +320,7 @@ export default function SobrePage() {
           <Card className="overflow-hidden border-border/60">
             <div className="grid lg:grid-cols-5">
               {/* LEFT */}
-              <div className="relative flex items-center justify-center bg-linear-to-br from-primary/15 to-secondary/15 p-10 lg:col-span-2">
+              <div className="relative flex items-center justify-center bg-secondary p-10 lg:col-span-2">
                 <div className="text-center">
                   <div className="mx-auto mb-5 flex h-28 w-28 items-center justify-center rounded-full bg-primary/20">
                     <Code className="h-14 w-14 text-primary" />
@@ -395,7 +395,7 @@ export default function SobrePage() {
 
         {/* CTA */}
         <section className="py-20">
-          <div className="overflow-hidden rounded-3xl border bg-linear-to-r from-primary/10 via-background to-secondary/10 px-6 py-16 text-center md:px-12">
+          <div className="overflow-hidden rounded-xl bg-secondary px-6 py-16 text-center md:px-12">
             <h2 className="text-4xl font-bold tracking-tight text-primary">
               Faça Parte Desta Missão
             </h2>

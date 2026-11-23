@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="container max-w-md py-12">
+    <div className="w-full">
       <Button variant="ghost" asChild className="mb-4">
         <Link href="/login">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
 
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-primary">
+          <CardTitle className="text-3xl">
             Recuperar Senha
           </CardTitle>
           <CardDescription>

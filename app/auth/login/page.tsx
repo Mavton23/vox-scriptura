@@ -61,11 +61,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container max-w-md py-12">
+    <div className="w-full">
       <Card>
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-3xl font-bold text-primary">
-            Vox Scriptura
+          <CardTitle className="text-3xl">
+            Bem-vindo de volta
           </CardTitle>
           <CardDescription>
             Entre na sua conta para acessar todos os recursos

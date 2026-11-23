@@ -68,7 +68,7 @@ function HighlightText({ text, highlight }: { text: string; highlight: string })
     <span>
       {parts.map((part, i) => 
         regex.test(part) ? (
-          <mark key={i} className="bg-yellow-200 dark:bg-yellow-800/50 px-0.5 rounded">
+          <mark key={i} className="bg-gold/25 text-foreground px-0.5 rounded">
             {part}
           </mark>
         ) : (
@@ -251,8 +251,7 @@ export default function FrasesDiariasPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <CalendarIcon className="h-8 w-8 text-secondary" />
-          <h1 className="text-4xl font-bold text-primary">Frases Diárias</h1>
+          <h1 className="text-[2.6rem] leading-tight">Frases Diárias</h1>
         </div>
         <p className="text-lg text-muted-foreground">
           Versículos com explicações práticas para sua meditação diária
@@ -262,14 +261,12 @@ export default function FrasesDiariasPage() {
       {/* Versículo do Dia */}
       {!loadingToday && todayVerse && (
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-primary mb-6">Versículo do Dia</h2>
-          <Card className="relative overflow-hidden bg-linear-to-br from-primary/5 to-secondary/5 border-2 border-primary/20">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full -mr-10 -mt-10" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/10 rounded-full -ml-8 -mb-8" />
+          <h2 className="text-2xl mb-6">Frase de hoje</h2>
+          <Card className="relative overflow-hidden border-gold/40">
             
             <CardHeader>
               <div className="flex justify-between items-start">
-                <Badge variant="secondary" className="mb-2">Destaque de Hoje</Badge>
+                <CardTitle className="ref text-2xl">{todayVerse.verse}</CardTitle>
                 <div className="flex gap-2">
                   <FavoriteButton 
                     type='verse'
@@ -286,8 +283,7 @@ export default function FrasesDiariasPage() {
                   </Button>
                 </div>
               </div>
-              <CardTitle className="text-3xl text-primary">{todayVerse.verse}</CardTitle>
-              <CardDescription className="text-lg italic">
+              <CardDescription className="scripture text-[1.35rem] text-foreground">
                 "{todayVerse.text}"
               </CardDescription>
             </CardHeader>
@@ -446,14 +442,14 @@ export default function FrasesDiariasPage() {
                     className="h-8 w-8"
                   />
                 </div>
-                <CardTitle className="text-xl text-primary">
+                <CardTitle className="ref text-xl">
                   {searchTerm ? (
                     <HighlightText text={verse.verse} highlight={searchTerm} />
                   ) : (
                     verse.verse
                   )}
                 </CardTitle>
-                <CardDescription className="line-clamp-2 italic">
+                <CardDescription className="scripture line-clamp-2 text-[1.05rem] text-foreground">
                   "{searchTerm ? (
                     <HighlightText text={verse.text} highlight={searchTerm} />
                   ) : (

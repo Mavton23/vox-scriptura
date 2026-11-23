@@ -66,7 +66,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Perguntas</CardTitle>
-            <MessageCircle className="h-4 w-4 text-secondary" />
+            <MessageCircle className="h-4 w-4 text-gold" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalQuestions}</div>
@@ -79,7 +79,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Doutrinas</CardTitle>
-            <BookOpen className="h-4 w-4 text-secondary" />
+            <BookOpen className="h-4 w-4 text-gold" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalDoctrines}</div>
@@ -92,7 +92,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Frases Diárias</CardTitle>
-            <Calendar className="h-4 w-4 text-secondary" />
+            <Calendar className="h-4 w-4 text-gold" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalVerses}</div>
@@ -105,7 +105,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Autores</CardTitle>
-            <Users className="h-4 w-4 text-secondary" />
+            <Users className="h-4 w-4 text-gold" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalAuthors}</div>
@@ -118,7 +118,7 @@ export default async function AdminDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Usuários</CardTitle>
-            <Users className="h-4 w-4 text-secondary" />
+            <Users className="h-4 w-4 text-gold" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalUsers}</div>
@@ -200,28 +200,28 @@ export default async function AdminDashboard() {
               href="/admin/questions/new"
               className="flex flex-col items-center gap-2 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <MessageCircle className="h-8 w-8 text-secondary" />
+              <MessageCircle className="h-8 w-8 text-gold" />
               <span className="text-sm font-medium">Nova Pergunta</span>
             </a>
             <a
               href="/admin/doctrines/new"
               className="flex flex-col items-center gap-2 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <BookOpen className="h-8 w-8 text-secondary" />
+              <BookOpen className="h-8 w-8 text-gold" />
               <span className="text-sm font-medium">Nova Doutrina</span>
             </a>
             <a
               href="/admin/daily-verses/new"
               className="flex flex-col items-center gap-2 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <Calendar className="h-8 w-8 text-secondary" />
+              <Calendar className="h-8 w-8 text-gold" />
               <span className="text-sm font-medium">Nova Frase</span>
             </a>
             <a
               href="/admin/authors/new"
               className="flex flex-col items-center gap-2 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <Users className="h-8 w-8 text-secondary" />
+              <Users className="h-8 w-8 text-gold" />
               <span className="text-sm font-medium">Novo Autor</span>
             </a>
           </div>

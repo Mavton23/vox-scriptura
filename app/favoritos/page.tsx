@@ -169,8 +169,7 @@ export default function FavoritosPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <Heart className="h-8 w-8 text-secondary fill-current" />
-          <h1 className="text-4xl font-bold text-primary">Meus Favoritos</h1>
+          <h1 className="text-[2.6rem] leading-tight">Meus Favoritos</h1>
         </div>
         <p className="text-lg text-muted-foreground">
           Gerencie todo o conteúdo que você salvou para estudar depois

@@ -186,7 +186,7 @@ export default function PerguntasPage() {
     <div className="container py-12">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-primary mb-4">Perguntas e Respostas</h1>
+        <h1 className="text-[2.6rem] leading-tight mb-3">Perguntas e Respostas</h1>
         <p className="text-lg text-muted-foreground">
           Encontre respostas bíblicas para suas dúvidas, baseadas nos escritos de autores confiáveis
         </p>
@@ -466,7 +466,7 @@ function HighlightText({ text, highlight }: { text: string; highlight: string })
     <span>
       {parts.map((part, i) => 
         regex.test(part) ? (
-          <mark key={i} className="bg-yellow-200 dark:bg-yellow-800/50 px-0.5 rounded">
+          <mark key={i} className="bg-gold/25 text-foreground px-0.5 rounded">
             {part}
           </mark>
         ) : (

@@ -27,7 +27,7 @@ export function AdminHeader() {
   }
 
   return (
-    <header className="h-16 bg-white border-b flex items-center justify-between px-6">
+    <header className="h-16 bg-background border-b flex items-center justify-between px-6">
       {/* Search */}
       <div className="flex-1 max-w-md">
         <div className="relative">
@@ -44,7 +44,7 @@ export function AdminHeader() {
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
+          <span className="absolute top-1 right-1 h-2 w-2 bg-gold rounded-full" />
         </Button>
 
         {/* User Menu */}

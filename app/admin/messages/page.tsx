@@ -109,8 +109,8 @@ export default function AdminMessagesPage() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; className: string }> = {
-      pending: { label: 'Pendente', className: 'bg-yellow-500' },
-      read: { label: 'Lida', className: 'bg-blue-500' },
+      pending: { label: 'Pendente', className: 'bg-gold text-gold-foreground' },
+      read: { label: 'Lida', className: 'bg-chart-3 text-white' },
       replied: { label: 'Respondida', className: 'bg-green-500' },
       archived: { label: 'Arquivada', className: 'bg-gray-500' }
     }

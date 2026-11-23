@@ -2,9 +2,20 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/*
+ * Vox Scriptura — identidade visual "Iluminura"
+ * Lápis-lazúli (o pigmento dos manuscritos iluminados) + folha de ouro,
+ * sobre papel claro. Tipografia: EB Garamond (Escritura e títulos) +
+ * Hanken Grotesk (interface).
+ */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "EB Garamond Variable", "EB Garamond", Georgia, serif;
+  --font-display: "EB Garamond Variable", "EB Garamond", Georgia, serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -26,8 +37,14 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
-  --color-hightlight: var(--hightlight);
-  --color-hightlight-foreground: var(--hightlight-foreground);
+  /* "hightlight" mantido (com a grafia original) por compatibilidade */
+  --color-hightlight: var(--gold);
+  --color-hightlight-foreground: var(--gold-foreground);
+  --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-lapis: var(--lapis);
+  --color-lapis-deep: var(--lapis-deep);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -48,83 +65,217 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0); 
-  --accent-foreground: oklch(0.205 0 0);
-  --hightlight: oklab(70.392% -0.04854 0.1422);
-  --hightlight-foreground: oklab(100% 0 -0.00011);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.5rem;
+
+  /* Paleta de marca */
+  --lapis: #21357a;
+  --lapis-deep: #16244f;
+  --gold: #b8892f;
+  --gold-ink: #8a6420;
+  --gold-foreground: #ffffff;
+
+  --background: #f8f8f6;
+  --foreground: #18203a;
+  --card: #ffffff;
+  --card-foreground: #18203a;
+  --popover: #ffffff;
+  --popover-foreground: #18203a;
+  --primary: #21357a;
+  --primary-foreground: #ffffff;
+  --secondary: #eceff7;
+  --secondary-foreground: #21357a;
+  --muted: #eff0f3;
+  --muted-foreground: #5a6178;
+  --accent: #e8ebf5;
+  --accent-foreground: #16244f;
+  --destructive: #b42318;
+  --border: #e1e3ea;
+  --input: #d7dae4;
+  --ring: #21357a;
+  --chart-1: #21357a;
+  --chart-2: #b8892f;
+  --chart-3: #5b78c9;
+  --chart-4: #2f7d6d;
+  --chart-5: #9aa3c0;
+  --sidebar: #16244f;
+  --sidebar-foreground: #e9ebf3;
+  --sidebar-primary: #d9b45a;
+  --sidebar-primary-foreground: #0e1530;
+  --sidebar-accent: #21357a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 0.08);
+  --sidebar-ring: #d9b45a;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0); 
-  --hightlight: oklab(70.392% -0.04854 0.1422);
-  --hightlight-foreground: oklab(100% 0 -0.00011);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --lapis: #9db0ee;
+  --lapis-deep: #0e1530;
+  --gold: #d9b45a;
+  --gold-ink: #d9b45a;
+  --gold-foreground: #0e1530;
+
+  --background: #0e1530;
+  --foreground: #e9ebf3;
+  --card: #131b3a;
+  --card-foreground: #e9ebf3;
+  --popover: #131b3a;
+  --popover-foreground: #e9ebf3;
+  --primary: #9db0ee;
+  --primary-foreground: #0e1530;
+  --secondary: #1c2652;
+  --secondary-foreground: #dfe5fa;
+  --muted: #18214a;
+  --muted-foreground: #9aa3c0;
+  --accent: #1e2958;
+  --accent-foreground: #e9ebf3;
+  --destructive: #f97066;
+  --border: rgb(255 255 255 / 0.09);
+  --input: rgb(255 255 255 / 0.14);
+  --ring: #9db0ee;
+  --chart-1: #9db0ee;
+  --chart-2: #d9b45a;
+  --chart-3: #5b78c9;
+  --chart-4: #5fb3a0;
+  --chart-5: #6b7499;
+  --sidebar: #0b1128;
+  --sidebar-foreground: #e9ebf3;
+  --sidebar-primary: #d9b45a;
+  --sidebar-primary-foreground: #0e1530;
+  --sidebar-accent: #1c2652;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 0.08);
+  --sidebar-ring: #d9b45a;
+}
+
+@utility container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 76rem;
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--gold) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Texto bíblico: Garamond com números oldstyle e mais entrelinha */
+  .scripture {
+    font-family: var(--font-serif);
+    font-variant-numeric: oldstyle-nums proportional-nums;
+    line-height: 1.6;
+  }
+
+  /* Capitular dourada — o elemento-assinatura da marca */
+  /* Ocupa duas linhas de texto: do topo da 1.ª linha à base da 2.ª */
+  .versal {
+    display: flow-root;
+  }
+  .versal::first-letter {
+    float: left;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    color: var(--gold);
+    font-size: 3.05em;
+    line-height: 0.8;
+    padding: 0.1em 0.08em 0 0;
+  }
+
+  /* Texto longo (doutrinas, respostas) */
+  .reading {
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.7;
+    max-width: 68ch;
+    font-variant-numeric: oldstyle-nums;
+  }
+  .reading > * + * {
+    margin-top: 1em;
+  }
+  .reading h1,
+  .reading h2,
+  .reading h3 {
+    margin-top: 1.8em;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .reading h2 {
+    font-size: 1.6rem;
+  }
+  .reading h3 {
+    font-size: 1.3rem;
+  }
+  .reading a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in oklab, var(--primary) 40%, transparent);
+  }
+  .reading blockquote {
+    border-left: 2px solid var(--gold);
+    padding-left: 1.1em;
+    font-style: italic;
+    color: var(--muted-foreground);
+  }
+  .reading ul {
+    list-style: disc;
+    padding-left: 1.3em;
+  }
+  .reading ol {
+    list-style: decimal;
+    padding-left: 1.3em;
+  }
+  .reading strong {
+    font-weight: 600;
+  }
+
+  /* Referência bíblica (ex.: "João 3:16") */
+  .ref {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--gold-ink);
+    letter-spacing: 0.01em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

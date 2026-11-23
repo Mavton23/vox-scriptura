@@ -1,26 +1,11 @@
 import Link from 'next/link'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { ArrowUpRight } from 'lucide-react'
 
-import {
-  ArrowRight,
-  BookOpen,
-  Calendar,
-  MessageCircle,
-  Quote,
-  ShieldCheck,
-  Brain,
-} from 'lucide-react'
-
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
+import { FavoriteButton } from '@/components/common/favorite-button'
+import { Ornament } from '@/components/brand/logo'
 
 const API_URL = process.env.NEXT_PUBLIC_APP_URL || ''
 
@@ -117,450 +102,217 @@ async function getRecentDoctrines(
   }
 }
 
-const features = [
+const paths = [
   {
-    icon: MessageCircle,
-    title: 'Perguntas & Respostas',
-    description:
-      'Respostas bíblicas para dúvidas teológicas e práticas cristãs.',
+    title: 'Perguntas e respostas',
+    description: 'Dúvidas reais sobre a fé e a vida cristã, respondidas a partir da Escritura.',
     href: '/perguntas',
+    action: 'Ver perguntas',
   },
-
   {
-    icon: BookOpen,
-    title: 'Doutrinas',
-    description:
-      'Ensino sistemático das principais doutrinas da fé cristã.',
+    title: 'Ensino de doutrina',
+    description: 'Estudos sobre as verdades centrais da fé, para ler com calma e voltar a eles.',
     href: '/doutrinas',
+    action: 'Ver doutrinas',
   },
-
   {
-    icon: Calendar,
-    title: 'Frases Diárias',
-    description:
-      'Reflexões e versículos comentados para sua caminhada diária.',
+    title: 'Frases diárias',
+    description: 'Um versículo por dia, com uma meditação curta para levar consigo.',
     href: '/frases-diarias',
+    action: 'Ver frases',
   },
 ]
 
+const FALLBACK_VERSE = {
+  verse: 'Salmos 119:105',
+  text: 'Lâmpada para os meus pés é a tua palavra, e luz para o meu caminho.',
+}
+
+function SectionHeading({ title, href, action }: { title: string; href: string; action: string }) {
+  return (
+    <div className="mb-6 flex items-end justify-between gap-4 border-b pb-4">
+      <h2 className="text-[1.9rem] leading-tight">{title}</h2>
+      <Link
+        href={href}
+        className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline underline-offset-4"
+      >
+        {action}
+        <ArrowUpRight className="h-4 w-4" />
+      </Link>
+    </div>
+  )
+}
+
 export default async function HomePage() {
-  const [dailyVerse, recentQuestions, recentDoctrines] =
-    await Promise.all([
-      getDailyVerse(),
-      getRecentQuestions(3),
-      getRecentDoctrines(3),
-    ])
+  const [dailyVerse, recentQuestions, recentDoctrines] = await Promise.all([
+    getDailyVerse(),
+    getRecentQuestions(4),
+    getRecentDoctrines(3),
+  ])
+
+  const verse = dailyVerse ?? FALLBACK_VERSE
+  const today = format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="flex flex-col">
-        {/* HERO */}
-        <section className="relative overflow-hidden border-b bg-linear-to-b from-primary/10 via-background to-background">
-          <div className="absolute inset-0 bg-grid-white/[0.02]" />
+    <div className="flex flex-col">
+      {/* HERO — a frase do dia é a porta de entrada */}
+      <section className="border-b">
+        <div className="container relative grid gap-12 py-16 md:py-24 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16">
+          <div className="max-w-3xl">
+            <p className="mb-8 text-sm text-muted-foreground first-letter:uppercase">{today}</p>
 
-          <div className="relative mx-auto flex min-h-[85vh] max-w-7xl flex-col items-center justify-center px-4 py-24 text-center md:px-8">
-            <Badge
-              variant="secondary"
-              className="mb-6 rounded-full px-4 py-1 text-sm"
-            >
-              {/* <Sparkles className="mr-2 h-4 w-4" /> */}
-              Voz da Escritura
-            </Badge>
+            <blockquote className="scripture versal text-[1.85rem] leading-[1.35] text-foreground sm:text-[2.35rem] md:text-[2.7rem]">
+              {verse.text}
+            </blockquote>
 
-            <h1 className="max-w-5xl text-5xl font-bold tracking-tight md:text-7xl">
-              Aprenda e Cresça na{' '}
-              <span className="bg-linear-to-r from-primary to-hightlight bg-clip-text text-transparent">
-                Sã Doutrina
-              </span>
-            </h1>
-
-            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-              Uma plataforma dedicada ao ensino bíblico sólido,
-              baseada em autores confiáveis e comprometida com a
-              verdade das Escrituras.
+            <p className="mt-6 text-lg">
+              <span className="ref text-xl">{verse.verse}</span>
+              {dailyVerse && (
+                <span className="text-muted-foreground"> — comentado por{' '}
+                  <Link href={`/autores/${dailyVerse.author.slug}`} className="text-foreground hover:text-primary">
+                    {dailyVerse.author.name}
+                  </Link>
+                </span>
+              )}
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Button size="lg" asChild>
-                <Link href="/perguntas">
-                  Explorar Perguntas
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/doutrinas">
-                  Ver Doutrinas
-                </Link>
-              </Button>
-            </div>
-
-            {/* STATS */}
-            <div className="mt-20 grid w-full max-w-5xl gap-6 md:grid-cols-3">
-              <Card className="border-border/60 bg-background/70 backdrop-blur">
-                <CardContent className="flex items-center gap-4 p-6">
-                  <div className="rounded-xl bg-primary/10 p-3">
-                    <MessageCircle className="h-6 w-6 text-primary" />
-                  </div>
-
-                  <div className="text-left">
-                    <div className="text-3xl font-bold text-primary">
-                      +100
-                    </div>
-
-                    <p className="text-sm text-muted-foreground">
-                      Perguntas Respondidas
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border/60 bg-background/70 backdrop-blur">
-                <CardContent className="flex items-center gap-4 p-6">
-                  <div className="rounded-xl bg-primary/10 p-3">
-                    <BookOpen className="h-6 w-6 text-primary" />
-                  </div>
-
-                  <div className="text-left">
-                    <div className="text-3xl font-bold text-primary">
-                      +50
-                    </div>
-
-                    <p className="text-sm text-muted-foreground">
-                      Estudos Doutrinários
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border/60 bg-background/70 backdrop-blur">
-                <CardContent className="flex items-center gap-4 p-6">
-                  <div className="rounded-xl bg-primary/10 p-3">
-                    <ShieldCheck className="h-6 w-6 text-primary" />
-                  </div>
-
-                  <div className="text-left">
-                    <div className="text-3xl font-bold text-primary">
-                      100%
-                    </div>
-
-                    <p className="text-sm text-muted-foreground">
-                      Conteúdo Verificado
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* DAILY VERSE */}
-        {dailyVerse && (
-          <section className="py-20">
-            <div className="mx-auto max-w-7xl px-4 md:px-8">
-              <div className="relative overflow-hidden rounded-3xl border bg-linear-to-br from-primary/10 via-background to-secondary/10 p-8 md:p-14">
-                <Quote className="absolute right-6 top-6 h-28 w-28 text-primary/10" />
-
-                <div className="relative z-10 max-w-4xl">
-                  <Badge className="mb-5 rounded-full px-4 py-1">
-                    Versículo do Dia
-                  </Badge>
-
-                  <h2 className="text-3xl font-bold text-primary md:text-4xl">
-                    {dailyVerse.verse}
-                  </h2>
-
-                  <p className="mt-6 text-xl italic leading-relaxed text-muted-foreground">
-                    "{dailyVerse.text}"
-                  </p>
-
-                  <Separator className="my-8" />
-
-                  <p className="leading-relaxed text-muted-foreground">
-                    {dailyVerse.explanation}
-                  </p>
-
-                  <p className="mt-6 font-medium text-primary">
-                    — {dailyVerse.author.name}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* FEATURES */}
-        <section className="py-20">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <div className="mb-14 text-center">
-              <Badge variant="outline" className="mb-4">
-                Recursos
-              </Badge>
-
-              <h2 className="text-4xl font-bold tracking-tight">
-                Explore a Plataforma
-              </h2>
-
-              <p className="mt-4 text-lg text-muted-foreground">
-                Ferramentas desenvolvidas para fortalecer sua vida espiritual.
-              </p>
-            </div>
-
-            <div className="grid auto-rows-fr gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {features.map((feature) => {
-                const Icon = feature.icon
-
-                return (
-                  <Card
-                    key={feature.title}
-                    className="group flex h-full flex-col border-border/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                  >
-                    <CardHeader>
-                      <div className="mb-4 w-fit rounded-2xl bg-primary/10 p-4 transition group-hover:bg-primary group-hover:text-primary-foreground">
-                        <Icon className="h-8 w-8" />
-                      </div>
-
-                      <CardTitle>{feature.title}</CardTitle>
-
-                      <CardDescription className="leading-relaxed">
-                        {feature.description}
-                      </CardDescription>
-                    </CardHeader>
-
-                    <CardFooter className="mt-auto">
-                      <Button
-                        variant="ghost"
-                        asChild
-                        className="group/button px-0"
-                      >
-                        <Link href={feature.href}>
-                          Explorar
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/button:translate-x-1" />
-                        </Link>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* RECENT CONTENT */}
-        <section className="py-20">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <div className="grid gap-10 lg:grid-cols-2">
-              {/* QUESTIONS */}
-              <div>
-                <div className="mb-8 flex items-center justify-between">
-                  <div>
-                    <h2 className="text-3xl font-bold">
-                      Perguntas Recentes
-                    </h2>
-
-                    <p className="mt-2 text-muted-foreground">
-                      Respostas bíblicas para dúvidas frequentes.
-                    </p>
-                  </div>
-
-                  <Button variant="ghost" asChild>
-                    <Link href="/perguntas">
-                      Ver todas
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-
-                <div className="space-y-5">
-                  {recentQuestions.length > 0 ? (
-                    recentQuestions.map((q) => (
-                      <Card
-                        key={q.id}
-                        className="transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
-                      >
-                        <CardHeader>
-                          <CardTitle className="text-xl leading-snug">
-                            <Link
-                              href={`/perguntas/${q.id}`}
-                              className="transition-colors hover:text-primary"
-                            >
-                              {q.question}
-                            </Link>
-                          </CardTitle>
-                        </CardHeader>
-
-                        <CardContent>
-                          <div className="flex flex-wrap items-center justify-between gap-4">
-                            <p className="text-sm text-muted-foreground">
-                              Por {q.author.name}
-                            </p>
-
-                            <div className="flex flex-wrap gap-2">
-                              {q.tags?.slice(0, 2).map((tag) => (
-                                <Badge
-                                  key={tag}
-                                  variant="secondary"
-                                >
-                                  {tag}
-                                </Badge>
-                              ))}
-
-                              {q.tags &&
-                                q.tags.length > 2 && (
-                                  <Badge variant="outline">
-                                    +{q.tags.length - 2}
-                                  </Badge>
-                                )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  ) : (
-                    <Card>
-                      <CardContent className="py-12 text-center">
-                        <p className="text-muted-foreground">
-                          Nenhuma pergunta encontrada.
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              </div>
-
-              {/* DOCTRINES */}
-              <div>
-                <div className="mb-8 flex items-center justify-between">
-                  <div>
-                    <h2 className="text-3xl font-bold">
-                      Doutrinas Recentes
-                    </h2>
-
-                    <p className="mt-2 text-muted-foreground">
-                      Estudos teológicos aprofundados.
-                    </p>
-                  </div>
-
-                  <Button variant="ghost" asChild>
-                    <Link href="/doutrinas">
-                      Ver todas
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-
-                <div className="space-y-5">
-                  {recentDoctrines.length > 0 ? (
-                    recentDoctrines.map((d) => (
-                      <Card
-                        key={d.id}
-                        className="transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
-                      >
-                        <CardHeader>
-                          <CardTitle className="text-xl leading-snug">
-                            <Link
-                              href={`/doutrinas/${d.slug}`}
-                              className="transition-colors hover:text-primary"
-                            >
-                              {d.title}
-                            </Link>
-                          </CardTitle>
-
-                          <CardDescription className="line-clamp-3 leading-relaxed">
-                            {d.summary}
-                          </CardDescription>
-                        </CardHeader>
-
-                        <CardContent>
-                          <div className="flex flex-wrap items-center justify-between gap-4">
-                            <p className="text-sm text-muted-foreground">
-                              Por {d.author.name}
-                            </p>
-
-                            <div className="flex flex-wrap gap-2">
-                              {d.tags?.slice(0, 2).map((tag) => (
-                                <Badge
-                                  key={tag}
-                                  variant="secondary"
-                                >
-                                  {tag}
-                                </Badge>
-                              ))}
-
-                              {d.tags &&
-                                d.tags.length > 2 && (
-                                  <Badge variant="outline">
-                                    +{d.tags.length - 2}
-                                  </Badge>
-                                )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  ) : (
-                    <Card>
-                      <CardContent className="py-12 text-center">
-                        <p className="text-muted-foreground">
-                          Nenhuma doutrina encontrada.
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="py-24">
-          <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <div className="overflow-hidden rounded-3xl border bg-hightlight p-12 text-center text-primary-foreground md:p-16">
-              <div className="mx-auto max-w-3xl">
-                <Badge
-                  variant="secondary"
-                  className="mb-6 text-secondary-foreground"
-                >
-                  Comece Hoje
-                </Badge>
-
-                <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
-                  Aprofunde Seus Estudos Bíblicos
-                </h2>
-
-                <p className="mt-6 text-lg leading-relaxed opacity-90">
-                  Explore perguntas, doutrinas e conteúdos desenvolvidos para
-                  fortalecer sua caminhada cristã.
+            {dailyVerse && (
+              <>
+                <p className="mt-8 max-w-2xl text-[1.05rem] leading-relaxed text-muted-foreground line-clamp-3">
+                  {dailyVerse.explanation}
                 </p>
-
-                <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    asChild
-                  >
-                    <Link href="/doutrinas">
-                      Começar Agora
-                    </Link>
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Button size="lg" asChild>
+                    <Link href={`/frases-diarias/${dailyVerse.id}`}>Ler a meditação</Link>
                   </Button>
-
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-white/30 bg-transparent text-white hover:bg-white hover:text-primary"
-                    asChild
-                  >
-                    <Link href="/perguntas">
-                      Explorar Perguntas
-                    </Link>
-                  </Button>
+                  <FavoriteButton type="verse" id={dailyVerse.id} variant="outline" size="lg" showText />
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
-        </section>
+
+          <aside className="self-end border-t pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+            <h1 className="text-[1.6rem] leading-snug">
+              Aprenda e cresça na sã doutrina.
+            </h1>
+            <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-foreground">
+              Ensino bíblico a partir de autores fiéis à Escritura, organizado para estudar no seu ritmo.
+            </p>
+            <ul className="mt-6 space-y-1">
+              {paths.map((p) => (
+                <li key={p.href}>
+                  <Link
+                    href={p.href}
+                    className="group -mx-2 flex items-center justify-between rounded-md px-2 py-2 text-[0.95rem] font-medium hover:bg-secondary"
+                  >
+                    {p.title}
+                    <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      {/* CAMINHOS DE ESTUDO */}
+      <section className="container py-20">
+        <div className="grid gap-10 md:grid-cols-3 md:gap-0 md:divide-x">
+          {paths.map((p) => (
+            <Link key={p.href} href={p.href} className="group md:px-8 md:first:pl-0 md:last:pr-0">
+              <h2 className="text-2xl transition-colors group-hover:text-primary">{p.title}</h2>
+              <p className="mt-3 leading-relaxed text-muted-foreground">{p.description}</p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                {p.action}
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <div className="container">
+        <Ornament />
       </div>
-    </main>
+
+      {/* CONTEÚDO RECENTE */}
+      <section className="container grid gap-16 py-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <div>
+          <SectionHeading title="Perguntas recentes" href="/perguntas" action="Todas as perguntas" />
+          {recentQuestions.length > 0 ? (
+            <ol className="divide-y">
+              {recentQuestions.map((q) => (
+                <li key={q.id}>
+                  <Link href={`/perguntas/${q.id}`} className="group block py-5">
+                    <p className="font-serif text-[1.3rem] leading-snug transition-colors group-hover:text-primary">
+                      {q.question}
+                    </p>
+                    <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                      <span>{q.author.name}</span>
+                      {q.tags?.slice(0, 2).map((t) => (
+                        <span key={t} className="text-gold-ink">#{t}</span>
+                      ))}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="py-10 text-muted-foreground">
+              Ainda não há perguntas publicadas.{' '}
+              <Link href="/contato" className="text-primary underline underline-offset-4">Envie a sua</Link>.
+            </p>
+          )}
+        </div>
+
+        <div>
+          <SectionHeading title="Doutrinas" href="/doutrinas" action="Todos os estudos" />
+          {recentDoctrines.length > 0 ? (
+            <ul className="space-y-4">
+              {recentDoctrines.map((d) => (
+                <li key={d.id}>
+                  <Link
+                    href={`/doutrinas/${d.slug}`}
+                    className="group block rounded-lg border bg-card p-5 transition-colors hover:border-primary/40"
+                  >
+                    <h3 className="text-xl leading-snug transition-colors group-hover:text-primary">{d.title}</h3>
+                    {d.summary && (
+                      <p className="mt-2 line-clamp-2 text-[0.95rem] leading-relaxed text-muted-foreground">
+                        {d.summary}
+                      </p>
+                    )}
+                    <p className="mt-3 text-sm text-muted-foreground">{d.author.name}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="py-10 text-muted-foreground">Os primeiros estudos estão a ser preparados.</p>
+          )}
+        </div>
+      </section>
+
+      {/* CONVITE */}
+      <section className="container">
+        <div className="flex flex-col items-start justify-between gap-6 rounded-xl bg-secondary px-6 py-10 sm:px-10 md:flex-row md:items-center">
+          <div className="max-w-xl">
+            <h2 className="text-[1.75rem] leading-tight text-secondary-foreground">
+              Guarde o que tocar o seu coração.
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              Com uma conta gratuita, você marca perguntas, doutrinas e frases como favoritas e volta a elas quando quiser.
+            </p>
+          </div>
+          <div className="flex shrink-0 gap-3">
+            <Button size="lg" asChild>
+              <Link href="/auth/register">Criar conta</Link>
+            </Button>
+            <Button size="lg" variant="ghost" asChild>
+              <Link href="/auth/login">Entrar</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }

@@ -177,7 +177,7 @@ export default function PrivacidadePage() {
     <main className="min-h-screen bg-background">
       <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-10 md:px-8 lg:px-12">
         {/* HERO */}
-        <section className="relative overflow-hidden rounded-3xl border bg-linear-to-br from-primary/10 via-background to-secondary/10 px-6 py-20 md:px-12">
+        <section className="relative overflow-hidden rounded-xl bg-secondary px-6 py-20 md:px-12">
           <div className="absolute inset-0 bg-grid-white/[0.02]" />
 
           <div className="relative mx-auto max-w-4xl text-center">
@@ -260,7 +260,7 @@ export default function PrivacidadePage() {
 
         {/* FOOTER */}
         <section className="pb-10">
-          <div className="overflow-hidden rounded-3xl border bg-linear-to-r from-primary/10 via-background to-hightlight p-10 text-center">
+          <div className="overflow-hidden rounded-xl bg-secondary p-10 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-primary">
               Transparência e Segurança
             </h2>

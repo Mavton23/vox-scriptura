@@ -209,7 +209,7 @@ export default function AdminDailyVersesPage() {
             <CardTitle className="text-sm font-medium">Agendados</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-blue-500">
+            <p className="text-2xl font-bold text-chart-3">
               {verses.filter(v => {
                 if (!v.scheduledFor) return false
                 const today = new Date()
@@ -226,7 +226,7 @@ export default function AdminDailyVersesPage() {
             <CardTitle className="text-sm font-medium">Livres</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-purple-500">
+            <p className="text-2xl font-bold text-gold-ink">
               {verses.filter(v => !v.scheduledFor).length}
             </p>
             <p className="text-xs text-muted-foreground">sem data fixa</p>
